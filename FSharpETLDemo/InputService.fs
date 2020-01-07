@@ -9,24 +9,15 @@ open System.Data.SqlClient
 
 open GlobalTypes
 open Model
+open System
 
-type SAPImportDBContext(connStrSettingName) = 
-    inherit DbContext(connStrSettingName)
-
-    [<DefaultValue>]
-    val mutable customers:DbSet<SAPCustomer>
-
-    member x.Customers
-        with get() = x.customers
-        and set v = x.customers <- v
-
-let loadCustomers () = 
+let loadCustomersHelper () = 
     let query = @"select * 
 from CustomerBasic cb 
 join CustomerCompany cc on cc.CustomerNumber = cb.CustomerNumber"
     
     //todo: reusable method for command and connection
-    use sqlConn = new SqlConnection("Server=AMSAPP012\Dev;Initial Catalog=SAPImport_Monkey;Trusted_Connection=true;")
+    use sqlConn = new SqlConnection("Server=AMSAPP012\Dev;Initial Catalog=SAPImport_Monkey;Trusted_Connection=true;") //todo: connection string in app.config
     sqlConn.Open()
     use sqlCmd = new SqlCommand(query, sqlConn) //todo: does F# have String.Empty?
     use dataReader = sqlCmd.ExecuteReader();
@@ -39,5 +30,12 @@ join CustomerCompany cc on cc.CustomerNumber = cb.CustomerNumber"
                 CompanyCode=(string)dataReader.["CompanyCode"]
             }
     }
-    Failure (Seq.toList records) //todo: does Seq.toList create a new list?
+    Success (Seq.toList records) //todo: does Seq.toList create a new list?
 
+
+
+let loadCustomers () =
+    try
+        loadCustomersHelper()
+    with
+        | :? Exception as ex -> String.Format("Exception.{2}Message:{0},{2}Stack Trace:{1}", ex.StackTrace, ex.Message, Environment.NewLine) |> Failure 
