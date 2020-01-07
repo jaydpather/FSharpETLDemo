@@ -1,15 +1,10 @@
-﻿// Learn more about F# at http://fsharp.org
-
-open System
-
-open ImportService
+﻿open System
 
 [<EntryPoint>]
 let main argv =
-    //printfn "Hello World from F#!"
-    ImportService.importCustomers()
+    ImportService.importCustomers InputService.loadCustomers
     Console.ReadKey()
-    0 // return an integer exit code
+    0 
 
 
 (*

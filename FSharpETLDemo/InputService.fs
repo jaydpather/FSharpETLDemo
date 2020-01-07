@@ -4,7 +4,7 @@ open GlobalTypes
 open Model
 
 let loadCustomers () =
-        Success [
+        Failure [
             {CustomerNumber="abc123"; CompanyCode="CCabc" }; 
             {CustomerNumber="abc456"; CompanyCode="CCdef" }
         ]

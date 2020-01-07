@@ -1,6 +1,6 @@
 ﻿module ImportService
 
-let importCustomers () =
-    let customers = InputService.loadCustomers()
+let importCustomers loadCustomersFunc =
+    let customers = loadCustomersFunc()
     LoggingService.logRecords customers
     
