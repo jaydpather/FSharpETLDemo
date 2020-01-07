@@ -1,10 +1,15 @@
 ﻿open System
 
+let applyIt op arg = op arg
+
 [<EntryPoint>]
 let main argv =
-    InputRepository.loadCustomers      
-    |> InputService.loadCustomers
-    |> ImportService.importCustomers 
+    
+    InputRepository.loadCustomers 
+    |> InputService.loadCustomers 
+    |> ImportService.importCustomers
+    |> LoggingService.logRecords 
+
     Console.ReadKey()
     0 
 

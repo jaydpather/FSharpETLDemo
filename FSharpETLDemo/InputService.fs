@@ -5,7 +5,7 @@ open Model
 open System
 
 
-let loadCustomers loadCustomersRepoFunc x =
+let loadCustomers loadCustomersRepoFunc =
     try
         loadCustomersRepoFunc()
     with
