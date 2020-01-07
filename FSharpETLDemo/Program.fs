@@ -2,7 +2,9 @@
 
 [<EntryPoint>]
 let main argv =
-    ImportService.importCustomers InputService.loadCustomers
+    InputRepository.loadCustomers      
+    |> InputService.loadCustomers
+    |> ImportService.importCustomers 
     Console.ReadKey()
     0 
 
