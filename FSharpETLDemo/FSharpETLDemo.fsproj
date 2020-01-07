@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GlobalTypes.fs" />
+    <Compile Include="Model.fs" />
+    <Compile Include="LoggingService.fs" />
+    <Compile Include="InputService.fs" />
+    <Compile Include="LogicService.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>
