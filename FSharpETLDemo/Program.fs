@@ -5,8 +5,10 @@ let applyIt op arg = op arg
 [<EntryPoint>]
 let main argv =
     
-    InputRepository.loadCustomers 
-    |> InputService.loadCustomers 
+    let repoFunc = fun () -> InputRepository.loadCustomers() 
+    let inputServiceFunc = fun () -> InputService.loadCustomers repoFunc
+    
+    inputServiceFunc
     |> ImportService.importCustomers
     |> LoggingService.logRecords 
 
