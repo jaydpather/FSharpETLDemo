@@ -38,22 +38,25 @@ let loadCustomers () =
     
     //todo: actually don't need this sequence thing since we're only selecting 1 record
     //todo: return 1 SAPCustomer OPTION instead of a SAPCustomer list. (you need option in case it loaded 0 records)
-    let records = seq {//todo: what is the difference between Seq and List?
-        while(dataReader.Read()) do //todo: seems like you have to use a while loop here, b/c that's how DataReader works. is there an F# data reader?
-            yield {
-                CustomerNumber = (string)dataReader.["CustomerNumber"]; 
-                CompanyCode = (string)dataReader.["CompanyCode"];
-                Name = (string)dataReader.["Name"];
-                City = (string)dataReader.["City"];
-                PostalCode = (string)dataReader.["PostalCode"];
-                Region = (string)dataReader.["Region"];
-                LanguageCode = (string)dataReader.["LanguageCode"];
-                VATNumber =(string)dataReader.["VATNumber"];
-                StreetHouseNumber = (string)dataReader.["StreetHouseNumber"];
-                Phone = (string)dataReader.["Phone"];
-                IsDeleted = (string)dataReader.["IsDeleted"];
-                CustomerType = (string)dataReader.["CustomerType"];
-                CountryCode = (string)dataReader.["CountryCode"];
-            }
-    }
-    Success (Seq.toList records) //todo: does Seq.toList create a new list?
+    //todo: what is the difference between Seq and List?
+    //todo: does Seq.toList create a new list?
+    let customer = 
+        match dataReader.Read() with
+            | true -> Some {
+                    CustomerNumber = (string)dataReader.["CustomerNumber"]; 
+                    CompanyCode = (string)dataReader.["CompanyCode"];
+                    Name = (string)dataReader.["Name"];
+                    City = (string)dataReader.["City"];
+                    PostalCode = (string)dataReader.["PostalCode"];
+                    Region = (string)dataReader.["Region"];
+                    LanguageCode = (string)dataReader.["LanguageCode"];
+                    VATNumber =(string)dataReader.["VATNumber"];
+                    StreetHouseNumber = (string)dataReader.["StreetHouseNumber"];
+                    Phone = (string)dataReader.["Phone"];
+                    IsDeleted = (string)dataReader.["IsDeleted"];
+                    CustomerType = (string)dataReader.["CustomerType"];
+                    CountryCode = (string)dataReader.["CountryCode"];
+                }
+            | false -> None
+            
+    Success (customer) 

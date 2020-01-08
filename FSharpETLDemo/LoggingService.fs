@@ -5,9 +5,12 @@ open System
 open GlobalTypes
 open Model
 
-let logRecords state = 
+let logRecord state = 
     match state with 
-    Success _ -> Console.WriteLine "success"
-    //| Success (sapCustomers:SAPCustomer list) -> sapCustomers |> List.map Console.WriteLine |> ignore 
+    | Success _ -> Console.WriteLine "success"
+    //| Success customerOption -> 
+    //    match customerOption with 
+    //        | Some (customer:SAPCustomer) -> customer |> Console.WriteLine |> ignore 
+    //        | None _ -> "no records" |> Console.WriteLine |> ignore
     | Failure (s:string) -> Console.WriteLine s
 

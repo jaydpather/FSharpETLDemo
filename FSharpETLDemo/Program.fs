@@ -11,7 +11,7 @@ let main argv =
     
     inputServiceFunc
     |> ImportService.importCustomers
-    |> LoggingService.logRecords 
+    |> LoggingService.logRecord
 
     Console.ReadKey()
     0 
