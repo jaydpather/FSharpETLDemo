@@ -4,7 +4,7 @@ open GlobalTypes
 open Model
 open System
 
-
+//NOTE: allowing strings to be null instead of using string option
 let loadCustomers loadCustomersRepoFunc =
     try
         let loadedCustomer = loadCustomersRepoFunc()

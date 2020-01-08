@@ -6,14 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="App.config" />
     <Compile Include="LoggingService.fs" />
     <Compile Include="InputService.fs" />
     <Compile Include="ImportService.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
+  <ItemGroup />
+
   <ItemGroup>
-    <ProjectReference Include="..\InputDataLayer\InputDataLayer.fsproj" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SQLDataLayer\SQLDataLayer.fsproj" />
     <ProjectReference Include="..\Model\Model.fsproj" />
   </ItemGroup>
 

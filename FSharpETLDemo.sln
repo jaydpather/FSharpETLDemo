@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpETLDemo", "FSharpETLDemo\FSharpETLDemo.fsproj", "{3A74C570-A2FD-4F1A-BD04-8E9FEEF4878A}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "InputDataLayer", "InputDataLayer\InputDataLayer.fsproj", "{C22D9311-4076-43D2-93DC-B3FCCCCB97F3}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SQLDataLayer", "SQLDataLayer\SQLDataLayer.fsproj", "{C22D9311-4076-43D2-93DC-B3FCCCCB97F3}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Model", "Model\Model.fsproj", "{67FC0234-A428-4332-AC59-DD76BBD39CF6}"
 EndProject

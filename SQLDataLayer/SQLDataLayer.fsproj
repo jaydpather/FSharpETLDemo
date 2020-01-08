@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="OutputRepository.fs" />
     <Compile Include="InputRepository.fs" />
   </ItemGroup>
 
