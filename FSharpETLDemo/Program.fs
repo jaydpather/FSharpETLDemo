@@ -9,9 +9,11 @@ let main argv =
     let sapImportConnectionString = Configuration.ConfigurationManager.ConnectionStrings.["SAPImport"].ConnectionString
     let repoFunc = fun () -> InputRepository.loadCustomers sapImportConnectionString
     let inputServiceFunc = fun () -> InputService.loadCustomers repoFunc
+
+    let mappingFunc = MappingService.mapToWCCustomer DateTime.UtcNow //todo: param will need to be a func that calls DateTime.UtcNow
     
-    inputServiceFunc
-    |> ImportService.importCustomers
+    inputServiceFunc()
+    |> mappingFunc
     |> LoggingService.logRecord
 
     Console.ReadKey()

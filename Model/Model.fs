@@ -27,7 +27,7 @@ type WCCustomer = {
     Phone:string;
     VATCode:string;
     LanguageCode:string;
-    Timestamp:DateTime option; //needs to be converted to DBNull when passing to query
+    Timestamp:DateTime; //this is nullable in the db, but we'll always have a value since we're inserting
     IsActive:bool;
     Address_StreetHouseNumber:string;
     Address_PostalCode:string;
