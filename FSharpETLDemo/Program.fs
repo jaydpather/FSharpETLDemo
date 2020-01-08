@@ -12,9 +12,7 @@ let main argv =
 
     let mappingFunc = MappingService.mapToWCCustomer DateTime.UtcNow //todo: param will need to be a func that calls DateTime.UtcNow
     
-    inputServiceFunc()
-    |> mappingFunc
-    |> LoggingService.logRecord
+    ImportService.importCustomers inputServiceFunc mappingFunc LoggingService.logRecord
 
     Console.ReadKey()
     0 
