@@ -1,5 +1,7 @@
 ﻿module StateChecker
 
+open System
+
 open GlobalTypes
 
 let checkState nextFunction state = 
