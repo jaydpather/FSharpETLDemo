@@ -1,7 +1,9 @@
 ﻿module ImportService
 
+open StateChecker
+
 let importCustomers loadCustomersFunc mappingFunc loggingFunc =
     loadCustomersFunc()
-    |> mappingFunc
+    |> checkState mappingFunc
     |> loggingFunc
     

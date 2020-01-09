@@ -10,21 +10,15 @@ let main argv =
     let repoFunc = fun () -> InputRepository.loadCustomers sapImportConnectionString
     let inputServiceFunc = fun () -> InputService.loadCustomers repoFunc
 
-    let mappingFunc = MappingService.mapToWCCustomer DateTime.UtcNow //todo: param will need to be a func that calls DateTime.UtcNow
+    //todo: if we need a more accurate timestamp, we could return to this file (right before mapping) in order to access DateTime.UtcNow
+    //  * or, we could create a delegate for a callback that returns DateTime.UtcNow. but is that bad style? (make a forum post)
+    let mappingFunc = MappingService.mapToWCCustomer DateTime.UtcNow 
     
     ImportService.importCustomers inputServiceFunc mappingFunc LoggingService.logRecord
 
     Console.ReadKey()
     0 
 
-
-(*
-REQUIREMENTS:
-    * attempt to read 1 record from SAPImport
-      * atomic select-update, set Status = 1 (this will be a flag that indicates it's in progress)
-    * log success/failure
-      * use console logging function for now
-*)
 
 (*
 OUTPUT DATA LAYER
