@@ -29,6 +29,6 @@ let upsertCustomer connectionString (customer:WCCustomer) =
 
     let rowsAffected = sqlCmd.ExecuteNonQuery()
     match rowsAffected with 
-    | 1 -> Success () //no data to return with success
+    | 1 -> Success (Some customer) //todo: instead of Success customer, this should be Success "insert" or Success "update"
     | _ -> Failure (String.Format("upserting WC Customer - 0 rows affected for CustomerNumber {0}", customer.CustomerNumber))
     

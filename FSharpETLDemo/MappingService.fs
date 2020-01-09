@@ -6,9 +6,8 @@ open GlobalTypes
 let convertToIsActive isDeleted = //todo: implement method
     true
 
-let mapToWCCustomer timestampOfBatch sapCustomerOption =
-    match sapCustomerOption with 
-    | Some (sapCustomer:SAPCustomer) -> Success (Some {
+let mapToWCCustomer timestampOfBatch (sapCustomer:SAPCustomer) =
+    Success (Some {
             CustomerNumber = sapCustomer.CustomerNumber;
             CompanyCode = sapCustomer.CompanyCode;
             Name = sapCustomer.Name;
@@ -24,4 +23,3 @@ let mapToWCCustomer timestampOfBatch sapCustomerOption =
             Address_Region = sapCustomer.Region;
             Address_CustomerType = sapCustomer.CustomerType;
         })
-    | None -> Success None
