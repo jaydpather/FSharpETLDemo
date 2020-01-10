@@ -1,3 +1,5 @@
+use SAPImport_Monkey
+
 select * 
 from CustomerBasic
 

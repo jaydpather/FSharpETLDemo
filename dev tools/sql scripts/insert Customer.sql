@@ -1,4 +1,7 @@
-use SAPImport_Monkey
+use SAPImport_RD
+
+--select * from CustomerBasic
+--select * from CustomerCompany where ImportStatusId = 3
 
 delete from CustomerCompany
 delete from CustomerBasic

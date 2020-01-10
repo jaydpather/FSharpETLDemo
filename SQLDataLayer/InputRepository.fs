@@ -35,7 +35,34 @@ let readFromDataReader dataReaderHasRowsFunc populateObjFunc =
 
 let loadCustomers connectionString = 
     //todo: filtering, CASE, and TRIM should all be done in business layer
-    let query = @"SELECT top(1)
+    let query = @"
+declare @FirstRecord table --we have to use a table var b/c the primary key is 2 columns
+(
+	CustomerNumber nchar(10),
+	CompanyCode nchar(6)
+)
+
+declare @statusIdNew int = (select Id from ImportStatus ist where ist.StatusName = 'New')
+declare @statusIdInProgress int = (select Id from ImportStatus ist where ist.StatusName = 'In Progress')
+
+insert into @FirstRecord(CustomerNumber, CompanyCode)
+	(select top(1) cc.CustomerNumber, cc.CompanyCode
+	from CustomerCompany cc
+	where cc.ImportStatusId = @statusIdNew)
+	--todo: why can't I do ORDER BY here?
+
+declare @updateCount int = 0
+
+update CustomerCompany 
+set ImportStatusId = @statusIdInProgress
+from CustomerCompany cc
+join @FirstRecord fr on fr.CustomerNumber = cc.CustomerNumber
+	and fr.CompanyCode = cc.CompanyCode
+where cc.ImportStatusId = @statusIdNew --filtering on New ImportStatus so that only 1 thread can update
+
+set @updateCount = @@ROWCOUNT --if multiple threads try to update, only 1 will get @updateCount = 1. the rest will get 0
+
+SELECT top(1)
       LTRIM(RTRIM(CAST(CB.[CustomerNumber] AS NVARCHAR(10)))) AS [CustomerNumber]
       ,CB.[CountryCode]
       ,CB.[Name]
@@ -53,7 +80,9 @@ let loadCustomers connectionString =
 	  ,C.[Id] As CustomerId  
 	FROM [dbo].[CustomerBasic] CB
 	LEFT JOIN [dbo].[CustomerCompany] CC ON CC.CustomerNumber=CB.CustomerNumber
-	LEFT OUTER JOIN [WeConnectSales_Monkey].[dbo].[Customers] C ON (C.CustomerNumber=CB.CustomerNumber AND C.CompanyCode=CC.CompanyCode)"
+	LEFT OUTER JOIN [WeConnectSales_Monkey].[dbo].[Customers] C ON (C.CustomerNumber=CB.CustomerNumber AND C.CompanyCode=CC.CompanyCode)
+	join @FirstRecord fr on fr.CustomerNumber = CC.CustomerNumber and fr.CompanyCode = CC.CompanyCode
+	WHERE @updateCount = 1 --this ensures only 1 thread can handle a record at a time";
     //WHERE CC.CompanyCode IN ('W031','TH31','INLC','TH90','TH47','CK07','CK47','PB31','3906','PVHE')
     
     //todo: reusable method for command and connection
