@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="StateChecker.fs" />
+    <Compile Include="ImportService.fs" />
+    <Compile Include="InputService.fs" />
+    <Compile Include="LoggingService.fs" />
+    <Compile Include="MappingService.fs" />
+    <Compile Include="OutputService.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.fsproj" />
+  </ItemGroup>
+
+</Project>

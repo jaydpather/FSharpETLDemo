@@ -7,12 +7,6 @@
 
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="StateChecker.fs" />
-    <Compile Include="OutputService.fs" />
-    <Compile Include="MappingService.fs" />
-    <Compile Include="LoggingService.fs" />
-    <Compile Include="InputService.fs" />
-    <Compile Include="ImportService.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -21,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BusinessLayer\BusinessLayer.fsproj" />
     <ProjectReference Include="..\SQLDataLayer\SQLDataLayer.fsproj" />
     <ProjectReference Include="..\Model\Model.fsproj" />
   </ItemGroup>
