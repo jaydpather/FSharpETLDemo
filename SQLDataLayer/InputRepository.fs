@@ -101,3 +101,34 @@ SELECT top(1)
         
     loadedCustomer
 
+
+//////////////////////////////////////////////////////////////////////////
+
+let updateFailedRecord connectionString failureInfo = 
+    let query = "
+declare @importStatusId int = (select Id from ImportStatus where StatusName = @importStatusName)
+update CustomerCompany 
+    set ImportStatusId = @importStatusId 
+where CustomerNumber = @customerNumber
+and CompanyCode = @companyCode"
+    use sqlConn = new SqlConnection(connectionString)
+    sqlConn.Open()
+    use sqlCmd = new SqlCommand(query, sqlConn) //todo: does F# have String.Empty?
+    sqlCmd.Parameters.Add(new SqlParameter("importStatusName", failureInfo.InputStatusUpdateInfo.NextImportStatus)) |> ignore
+    sqlCmd.Parameters.Add(new SqlParameter("customerNumber", failureInfo.InputStatusUpdateInfo.CustomerNumber)) |> ignore
+    sqlCmd.Parameters.Add(new SqlParameter("companyCode", failureInfo.InputStatusUpdateInfo.CompanyCode)) |> ignore
+
+    let rowsUpdated = sqlCmd.ExecuteNonQuery();
+    match rowsUpdated with 
+    |1 -> NewFailure failureInfo //pass the original failure back to logging service
+    |_ -> NewFailure ({failureInfo with
+                        Message = String.Format("Failed to update ImportStatus of input record.{0}{1}", Environment.NewLine, failureInfo.Message)
+                        }:FailureInfo)
+
+
+
+let updateInputStatus updateDBMethod state = 
+    match state with 
+    |Success(s) -> state
+    |Failure s -> state
+    |NewFailure failureInfo -> updateDBMethod failureInfo

@@ -9,9 +9,7 @@ let formatUpdateStatusInfo (updateStatusInfo:InputStatusUpdateInfo) =
     String.Format("CustomerNumber:{1}{0}CompanyCode:{2}{0}NextImportStatus:{3}", Environment.NewLine, updateStatusInfo.CustomerNumber, updateStatusInfo.CompanyCode, updateStatusInfo.NextImportStatus)
 
 let logNewFailure failureInfo = 
-    match failureInfo.InputStatusUpdateInfo with 
-    |Some(inputStatusUpdateInfo) -> String.Format("{1}{0}{2}", Environment.NewLine, (formatUpdateStatusInfo inputStatusUpdateInfo), failureInfo.Message) |> Console.WriteLine
-    |None _ -> Console.WriteLine (failureInfo.Message)
+    String.Format("{1}{0}{2}", Environment.NewLine, (formatUpdateStatusInfo failureInfo.InputStatusUpdateInfo), failureInfo.Message) |> Console.WriteLine
 
 let logRecord state = 
     match state with 

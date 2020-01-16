@@ -9,19 +9,19 @@ let generateFailureInfo (ex:Exception) customer =
     match ex.Message.Contains("Violation of PRIMARY KEY constraint 'PK_dbo_Customers'") with 
     | true -> ({
         Message = LoggingService.formatExceptionMessage "duplicate primary key - record will be retried" ex;
-        InputStatusUpdateInfo = Some ({
+        InputStatusUpdateInfo = {
             CustomerNumber = customer.CustomerNumber;
             CompanyCode = customer.CompanyCode;
             NextImportStatus = "New"; //todo: reference constant
-        })
+        }
     })
     | false -> ({
         Message = LoggingService.formatExceptionMessage "unkown error when saving WC Customer" ex;
-        InputStatusUpdateInfo = Some ({
+        InputStatusUpdateInfo = {
             CustomerNumber = customer.CustomerNumber;
             CompanyCode = customer.CompanyCode;
             NextImportStatus = "Failed"; //todo: reference constant
-        })
+        }
     })
 
 let saveCustomer (repoFunc) (customer:WCCustomer) = 

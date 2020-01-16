@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <Compile Include="StateChecker.fs" />
-    <Compile Include="ImportService.fs" />
+    <Compile Include="ImportWorkflow.fs" />
     <Compile Include="InputService.fs" />
     <Compile Include="LoggingService.fs" />
     <Compile Include="MappingService.fs" />

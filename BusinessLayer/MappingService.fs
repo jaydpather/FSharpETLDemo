@@ -7,6 +7,7 @@ let convertToIsActive isDeleted = //todo: implement method
     true
 
 let mapToWCCustomer timestampOfBatch (sapCustomer:SAPCustomer) =
+//todo: try/with - return NewFailure if exception
     Success (Some {
             CustomerNumber = sapCustomer.CustomerNumber;
             CompanyCode = sapCustomer.CompanyCode;

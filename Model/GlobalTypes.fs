@@ -5,13 +5,14 @@ type Result<'TSuccess,'TFailure1, 'TFailure2> =
     | Failure of 'TFailure1
     | NewFailure of 'TFailure2
 
+//todo: break into UniqueIndentifier and NextImportStatus
 type InputStatusUpdateInfo = {
     CustomerNumber:string;
     CompanyCode:string;
-    NextImportStatus:string;
+    NextImportStatus:string; //todo: enum for ImportStatus
 }
 
 type FailureInfo = {
     Message:string;
-    InputStatusUpdateInfo:InputStatusUpdateInfo option;
+    InputStatusUpdateInfo:InputStatusUpdateInfo;
 }
