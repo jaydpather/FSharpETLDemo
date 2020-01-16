@@ -1,6 +1,6 @@
-﻿module GlobalTypes //todo: rename to State
+﻿module GlobalTypes
 
-type Result<'TSuccess,'TFailure1, 'TFailure2> = 
+type Result<'TSuccess,'TFailure1, 'TFailure2> = //todo: rename Result to State
     | Success of 'TSuccess
     | Failure of 'TFailure1
     | NewFailure of 'TFailure2

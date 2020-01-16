@@ -91,8 +91,6 @@ SELECT top(1)
     use sqlCmd = new SqlCommand(query, sqlConn) //todo: does F# have String.Empty?
     use dataReader = sqlCmd.ExecuteReader();
 
-    //todo: what is the difference between Seq and List?
-    //todo: does Seq.toList create a new list?
     //NOTE: it seems that if a string is null in the DB, it comes out as "" in F#, so there is no need to check for null
     //  * this also means if you want your F# code to distinguish between NULL and "", you need to use a SQL CASE statement
     let hasRowsFunc = fun () -> dataReader.HasRows //using a delegate so it's injectable
@@ -104,7 +102,7 @@ SELECT top(1)
 
 //////////////////////////////////////////////////////////////////////////
 
-let updateFailedRecord connectionString failureInfo = 
+let private updateFailedRecord connectionString failureInfo = 
     let query = "
 declare @importStatusId int = (select Id from ImportStatus where StatusName = @importStatusName)
 update CustomerCompany 
@@ -127,8 +125,8 @@ and CompanyCode = @companyCode"
 
 
 
-let updateInputStatus updateDBMethod state = 
+let updateInputStatus connectionString state = 
     match state with 
     |Success(s) -> state
     |Failure s -> state
-    |NewFailure failureInfo -> updateDBMethod failureInfo
+    |NewFailure failureInfo -> updateFailedRecord connectionString failureInfo

@@ -7,7 +7,6 @@ open System
 open Model
 
 let upsertCustomer connectionString (customer:WCCustomer) =
-    //todo: thread-safe CustomerId in WeConnectSales DB
     let query = @"
 DECLARE @Actions TABLE(Action VARCHAR(20));  --not sure why we need 20 length, but that's what the MS examples have
 declare @customerId int = (SELECT ISNULL((MAX(Id) + 1),1000) FROM [Customers]) --Customers table does not have IDENTITY AUTO INCREMENT. If there's a primary key collision, we'll just retry this record
