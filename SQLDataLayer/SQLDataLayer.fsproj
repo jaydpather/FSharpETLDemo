@@ -8,6 +8,7 @@
     <Compile Include="OutputRepository.fs" />
     <Compile Include="InputRepository.fs" />
     <Compile Include="InputRepositoryFactory.fs" />
+    <Compile Include="OutputRepositoryFactory.fs" />
   </ItemGroup>
 
   <ItemGroup>

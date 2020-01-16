@@ -27,8 +27,8 @@ let main argv =
 
 
     let wcSalesConnectionString = Configuration.ConfigurationManager.ConnectionStrings.["WeConnectSales"].ConnectionString
-    let outputRepoFunc = fun customer -> OutputRepository.upsertCustomer wcSalesConnectionString customer
-    let outputServiceSaveFunc = fun customer -> OutputService.saveCustomer outputRepoFunc customer 
+    let outputRepoCtx = OutputRepositoryFactory.getOutputRepositoryContext wcSalesConnectionString
+    let outputServiceSaveFunc = fun customer -> OutputService.saveCustomer outputRepoCtx.saveCustomer customer 
 
     //todo: if we need a more accurate timestamp, we could return to this file (right before mapping) in order to access DateTime.UtcNow
     //  * or, we could create a delegate for a callback that returns DateTime.UtcNow. but is that bad style? (make a forum post)

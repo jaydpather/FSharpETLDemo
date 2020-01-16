@@ -13,11 +13,3 @@ let getInputRepositoryContext connectionString = {
     loadCustomer = fun () -> InputRepository.loadCustomers connectionString;
     updateImportStatus = fun result -> InputRepository.updateInputStatus connectionString result
 }
-
-
-
-let getUpdateStatusFunc connectionString =
-    InputRepository.updateInputStatus connectionString
-
-let getLoadCustomersFunc connectionString = 
-    InputRepository.loadCustomers connectionString
