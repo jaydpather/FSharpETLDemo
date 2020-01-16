@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <Compile Include="Constants.fs" />
-    <Compile Include="GlobalTypes.fs" />
     <Compile Include="Model.fs" />
+    <Compile Include="GlobalTypes.fs" />
   </ItemGroup>
 
 </Project>

@@ -22,9 +22,9 @@ let main argv =
     let sapImportConnectionString = Configuration.ConfigurationManager.ConnectionStrings.["SAPImport"].ConnectionString
     let inputRepoCtx = InputRepositoryFactory.getInputRepositoryContext sapImportConnectionString
 
-    let inputServiceLoadFunc = fun () -> InputService.loadCustomers inputRepoCtx.loadCustomer
-    let inputServiceUpdateStatusFunc = fun state -> InputService.updateImportStatus inputRepoCtx.updateImportStatus state
 
+    let inputServiceCtx = InputServiceFactory.getInputServiceContext inputRepoCtx.loadCustomer
+    let inputServiceUpdateStatusFunc = fun state -> InputService.updateImportStatus inputRepoCtx.updateImportStatus state
 
     let wcSalesConnectionString = Configuration.ConfigurationManager.ConnectionStrings.["WeConnectSales"].ConnectionString
     let outputRepoCtx = OutputRepositoryFactory.getOutputRepositoryContext wcSalesConnectionString
@@ -35,7 +35,7 @@ let main argv =
     let mappingFunc = MappingService.mapToWCCustomer DateTime.UtcNow 
     
     while(true) do
-        ImportWorkflow.importCustomers inputServiceLoadFunc mappingFunc outputServiceSaveFunc inputServiceUpdateStatusFunc LoggingService.logRecord
+        ImportWorkflow.importCustomers inputServiceCtx.loadCustomer mappingFunc outputServiceSaveFunc inputServiceUpdateStatusFunc LoggingService.logRecord
 
     //Console.ReadKey()
     0 

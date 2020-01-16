@@ -8,6 +8,7 @@
     <Compile Include="StateChecker.fs" />
     <Compile Include="ImportWorkflow.fs" />
     <Compile Include="InputService.fs" />
+    <Compile Include="InputServiceFactory.fs" />
     <Compile Include="LoggingService.fs" />
     <Compile Include="MappingService.fs" />
     <Compile Include="OutputService.fs" />

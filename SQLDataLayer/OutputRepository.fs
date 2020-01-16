@@ -1,4 +1,4 @@
-﻿module OutputRepository
+﻿module internal OutputRepository
 
 open System.Data.SqlClient
 
