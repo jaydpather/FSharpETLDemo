@@ -3,15 +3,11 @@
 open GlobalTypes
 open Model
 open System
+open InputRepositoryFactory
 
-//todo: Create a InputRepository type that contains types for each function
-//  * the two functions are: LoadCustomers and UpdateFailedCustomers
-//type LoadCustomersFunc = unit -> SAPCustomer option
-//type UpdateFailedCustomersFunc = FailureInfo -> Result<'T1, 'T2, 'T3>
-
-let updateImportStatus updateRepoFunc state = 
+let updateImportStatus inputRepoCtx state = 
     try
-        updateRepoFunc state
+        inputRepoCtx.updateImportStatus state
     with
     | :? Exception as ex -> (String.Format("failed to update import status{0}Message:{1}{0}Stack Trace:{2}", Environment.NewLine, ex.Message, ex.StackTrace)) |> Failure //todo: NewFailure
 

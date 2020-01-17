@@ -6,16 +6,18 @@
 
   <ItemGroup>
     <Compile Include="StateChecker.fs" />
-    <Compile Include="ImportWorkflow.fs" />
     <Compile Include="InputService.fs" />
     <Compile Include="InputServiceFactory.fs" />
     <Compile Include="LoggingService.fs" />
     <Compile Include="MappingService.fs" />
     <Compile Include="OutputService.fs" />
+    <Compile Include="OutputServiceFactory.fs" />
+    <Compile Include="ImportWorkflow.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.fsproj" />
+    <ProjectReference Include="..\SQLDataLayer\SQLDataLayer.fsproj" />
   </ItemGroup>
 
 </Project>

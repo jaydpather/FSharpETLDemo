@@ -1,4 +1,4 @@
-module internal InputRepository //todo: rename to SAPImportRepository?
+module internal InputRepository
 
 open System
 open System.Data.SqlClient

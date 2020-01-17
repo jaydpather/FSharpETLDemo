@@ -1,12 +1,14 @@
 ﻿module ImportWorkflow
 
 open StateChecker
+open InputServiceFactory //todo: InputServiceContext should be inside InputService, not InputServiceFactory. (same for all ServiceContexts and RepoContexts)
+open OutputServiceFactory
 
-let importCustomers loadCustomersFunc mappingFunc saveCustomersFunc updateInputStatusFunc loggingFunc =
+let importCustomers inputSvcCtx mappingFunc outputSvcCtx loggingFunc =
     //todo: convert all Failures to NewFailures
-    loadCustomersFunc()
+    inputSvcCtx.loadCustomer()
     |> checkState mappingFunc
-    |> checkState saveCustomersFunc
-    |> updateInputStatusFunc //the last 2 steps handle both success and failure, so we don't call checkState on them
+    |> checkState outputSvcCtx.saveCustomer
+    |> inputSvcCtx.updateInputStatus //the last 2 steps handle both success and failure, so we don't call checkState on them
     |> loggingFunc
     

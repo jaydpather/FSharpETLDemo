@@ -14,28 +14,22 @@ let main argv =
 
     //todo: remove as much logic as possible from Program.cs
 
-    //todo: create Factories modules inside DB layer and business layer (1 for services, 1 for repos)
-    //todo: create types called InputService/Repository, OutputService/Repository, and LoggingService/Repository
-    //  * each type contains delegates for functions like save, load, etc.
-    //  * e.g., InputRepository would have functions like LoadCustomers and DeleteSuccessfulCustomers
+    let inputServiceCtx = 
+        Configuration.ConfigurationManager.ConnectionStrings.["SAPImport"].ConnectionString 
+        |> InputRepositoryFactory.getInputRepositoryContext 
+        |> InputServiceFactory.getInputServiceContext
 
-    let sapImportConnectionString = Configuration.ConfigurationManager.ConnectionStrings.["SAPImport"].ConnectionString
-    let inputRepoCtx = InputRepositoryFactory.getInputRepositoryContext sapImportConnectionString
-
-
-    let inputServiceCtx = InputServiceFactory.getInputServiceContext inputRepoCtx.loadCustomer
-    let inputServiceUpdateStatusFunc = fun state -> InputService.updateImportStatus inputRepoCtx.updateImportStatus state
-
-    let wcSalesConnectionString = Configuration.ConfigurationManager.ConnectionStrings.["WeConnectSales"].ConnectionString
-    let outputRepoCtx = OutputRepositoryFactory.getOutputRepositoryContext wcSalesConnectionString
-    let outputServiceSaveFunc = fun customer -> OutputService.saveCustomer outputRepoCtx.saveCustomer customer 
+    let outputSvcCtx = 
+        Configuration.ConfigurationManager.ConnectionStrings.["WeConnectSales"].ConnectionString
+        |> OutputRepositoryFactory.getOutputRepositoryContext 
+        |> OutputServiceFactory.getOutputServiceContext 
 
     //todo: if we need a more accurate timestamp, we could return to this file (right before mapping) in order to access DateTime.UtcNow
     //  * or, we could create a delegate for a callback that returns DateTime.UtcNow. but is that bad style? (make a forum post)
     let mappingFunc = MappingService.mapToWCCustomer DateTime.UtcNow 
     
     while(true) do
-        ImportWorkflow.importCustomers inputServiceCtx.loadCustomer mappingFunc outputServiceSaveFunc inputServiceUpdateStatusFunc LoggingService.logRecord
+        ImportWorkflow.importCustomers inputServiceCtx mappingFunc outputSvcCtx LoggingService.logRecord
 
     //Console.ReadKey()
     0 

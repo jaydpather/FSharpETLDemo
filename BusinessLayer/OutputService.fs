@@ -4,6 +4,7 @@ open System
 
 open GlobalTypes
 open Model
+open OutputRepositoryFactory
 
 let generateFailureInfo (ex:Exception) customer = 
     match ex.Message.Contains("Violation of PRIMARY KEY constraint 'PK_dbo_Customers'") with 
@@ -24,9 +25,9 @@ let generateFailureInfo (ex:Exception) customer =
         }
     })
 
-let saveCustomer (repoFunc) (customer:WCCustomer) = 
+let saveCustomer outputRepoCtx (customer:WCCustomer) = 
     try
-        let result = repoFunc customer
+        let result = outputRepoCtx.saveCustomer customer
         Success (Some result)
     with
         | :? Exception as ex -> generateFailureInfo ex customer |> NewFailure //todo: reusable error message formatting

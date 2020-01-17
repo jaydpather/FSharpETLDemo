@@ -2,11 +2,15 @@
 
 open Model
 open GlobalTypes
+open InputRepositoryFactory
 
+//NOTE: creating these ServiceContext types takes way more time b/c you have to declare the type (unlike individual methods)
 type InputServiceContext = {
-    loadCustomer : unit -> Result<SAPCustomer option, string, FailureInfo>
+    loadCustomer : unit -> Result<SAPCustomer option, string, FailureInfo>;
+    updateInputStatus : Result<string option, string, FailureInfo> -> Result<string option, string, FailureInfo>
 }
 
-let getInputServiceContext loadCustomerFunc = {
-    loadCustomer = fun () -> InputService.loadCustomers loadCustomerFunc
+let getInputServiceContext (inputRepoCtx:InputRepositoryContext) = {
+    loadCustomer = fun () -> InputService.loadCustomers inputRepoCtx.loadCustomer;
+    updateInputStatus = fun state -> InputService.updateImportStatus inputRepoCtx state
 }
