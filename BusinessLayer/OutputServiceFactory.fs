@@ -4,7 +4,7 @@ open Model
 open GlobalTypes
 
 type OutputServiceContext = {
-    saveCustomer : WCCustomer -> Result<string option, string, FailureInfo>
+    saveCustomer : WCCustomer -> Result<string option, SuccessInfo option, string, FailureInfo>
 }
 
 let getOutputServiceContext outputRepoCtx = {

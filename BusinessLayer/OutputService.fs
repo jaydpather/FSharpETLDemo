@@ -28,7 +28,7 @@ let generateFailureInfo (ex:Exception) customer =
 let saveCustomer outputRepoCtx (customer:WCCustomer) = 
     try
         let result = outputRepoCtx.saveCustomer customer
-        Success (Some result)
+        NewSuccess (Some result)
     with
         | :? Exception as ex -> generateFailureInfo ex customer |> NewFailure //todo: reusable error message formatting
 

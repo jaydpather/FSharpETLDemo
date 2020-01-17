@@ -1,9 +1,10 @@
 ﻿module OutputRepositoryFactory
 
 open Model
+open GlobalTypes
 
 type OutputRepositoryContext = {
-    saveCustomer: WCCustomer -> string
+    saveCustomer: WCCustomer -> SuccessInfo
 }
 
 let getOutputRepositoryContext connectionString = {

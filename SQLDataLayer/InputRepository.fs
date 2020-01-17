@@ -121,5 +121,6 @@ and CompanyCode = @companyCode"
 let updateInputStatus state getSqlCmdFunc = 
     match state with 
     |Success(s) -> state
+    |NewSuccess(s) -> state //s is now going to be a SuccessInfo option
     |Failure s -> state
     |NewFailure failureInfo -> updateFailedRecord failureInfo getSqlCmdFunc 

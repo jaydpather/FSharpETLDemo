@@ -73,7 +73,7 @@ WHEN NOT MATCHED BY TARGET
 					,s.PostalCode
 					,s.Region
 					,s.CustomerType)
-output $action into @Actions; --todo: do we also want to return row count?
+output $action into @Actions; --todo: also want to return row count. Failure if rowCount <> 1
 
 select Action from @Actions --impossible for this to return more than 1 row, since we selected from parameters"
 
@@ -94,7 +94,12 @@ select Action from @Actions --impossible for this to return more than 1 row, sin
         sqlCmd.Parameters.Add(new SqlParameter("vatCode", customer.VATCode)) |> ignore
 
         let sqlAction = sqlCmd.ExecuteScalar() :?> string;
-        let result = String.Format("SUCCESS: {0} CustomerNumber:{1} CompanyCode:{2}", sqlAction, customer.CustomerNumber, customer.CompanyCode)
+        //let result = String.Format("SUCCESS: {0} CustomerNumber:{1} CompanyCode:{2}", sqlAction, customer.CustomerNumber, customer.CompanyCode)
+        let result = {
+            Action = sqlAction;
+            CustomerNumber = customer.CustomerNumber;
+            CompanyCode = customer.CompanyCode;
+        }
     
         result
     

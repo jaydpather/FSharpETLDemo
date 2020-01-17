@@ -5,7 +5,7 @@ open Model
 
 type InputRepositoryContext = { 
     loadCustomer : unit -> SAPCustomer option;
-    updateImportStatus : Result<string option, string, FailureInfo> -> Result<string option, string, FailureInfo>
+    updateImportStatus : Result<string option, SuccessInfo option, string, FailureInfo> -> Result<string option, SuccessInfo option, string, FailureInfo>
 }
 
     
