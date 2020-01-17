@@ -10,6 +10,11 @@ type InputRepositoryContext = {
 
     
 let getInputRepositoryContext connectionString = {
-    loadCustomer = fun () -> InputRepository.loadCustomers connectionString;
-    updateImportStatus = fun result -> InputRepository.updateInputStatus connectionString result
+    loadCustomer = fun () -> 
+        SQLUtils.getExecuteReaderFunc connectionString
+        |> InputRepository.loadCustomers 
+
+    updateImportStatus = fun result -> 
+        SQLUtils.getSqlCmdFunc connectionString
+        |> InputRepository.updateInputStatus result  //todo: can we get rid of the parentheses by changing param order?
 }

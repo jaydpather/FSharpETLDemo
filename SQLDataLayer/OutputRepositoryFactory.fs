@@ -7,5 +7,7 @@ type OutputRepositoryContext = {
 }
 
 let getOutputRepositoryContext connectionString = {
-    saveCustomer = fun customer -> OutputRepository.upsertCustomer connectionString customer
+    saveCustomer = fun customer -> 
+        SQLUtils.getSqlCmdFunc connectionString
+        |> OutputRepository.upsertCustomer customer
 }

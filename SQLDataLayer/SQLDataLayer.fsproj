@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="SQLUtils.fs" />
     <Compile Include="OutputRepository.fs" />
     <Compile Include="InputRepository.fs" />
     <Compile Include="InputRepositoryFactory.fs" />

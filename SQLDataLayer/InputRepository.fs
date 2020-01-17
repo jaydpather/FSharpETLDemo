@@ -10,6 +10,8 @@ open Model
 
 let populateSAPCustomer (dataReader:SqlDataReader) =
     dataReader.Read() |> ignore 
+    //NOTE: it seems that if a string is null in the DB, it comes out as "" in F#, so there is no need to check for null
+        //  * this also means if you want your F# code to distinguish between NULL and "", you need to use a SQL CASE statement
     {
         CustomerNumber = (string)dataReader.["CustomerNumber"]; 
         CompanyCode = (string)dataReader.["CompanyCode"];
@@ -33,7 +35,7 @@ let readFromDataReader dataReaderHasRowsFunc populateObjFunc =
 
 
 
-let loadCustomers connectionString = 
+let loadCustomers executeReaderFunc = 
     //todo: filtering, CASE, and TRIM should all be done in business layer
     let query = @"
 declare @FirstRecord table --we have to use a table var b/c the primary key is 2 columns
@@ -83,50 +85,41 @@ SELECT top(1)
 	LEFT OUTER JOIN [WeConnectSales_Monkey].[dbo].[Customers] C ON (C.CustomerNumber=CB.CustomerNumber AND C.CompanyCode=CC.CompanyCode)
 	join @FirstRecord fr on fr.CustomerNumber = CC.CustomerNumber and fr.CompanyCode = CC.CompanyCode
 	WHERE @updateCount = 1 --this ensures only 1 thread can handle a record at a time";
+
+    let dataReaderCallback = fun (dataReader:SqlDataReader) -> 
+        let hasRowsFunc = fun () -> dataReader.HasRows //using a delegate so it's injectable
+        let populateObjFunc = fun () -> populateSAPCustomer dataReader //using a delegate so it's injectable
+        readFromDataReader hasRowsFunc populateObjFunc
     //WHERE CC.CompanyCode IN ('W031','TH31','INLC','TH90','TH47','CK07','CK47','PB31','3906','PVHE')
     
-    //todo: reusable method for command and connection
-    use sqlConn = new SqlConnection(connectionString)
-    sqlConn.Open()
-    use sqlCmd = new SqlCommand(query, sqlConn) //todo: does F# have String.Empty?
-    use dataReader = sqlCmd.ExecuteReader();
-
-    //NOTE: it seems that if a string is null in the DB, it comes out as "" in F#, so there is no need to check for null
-    //  * this also means if you want your F# code to distinguish between NULL and "", you need to use a SQL CASE statement
-    let hasRowsFunc = fun () -> dataReader.HasRows //using a delegate so it's injectable
-    let populateObjFunc = fun () -> populateSAPCustomer dataReader //using a delegate so it's injectable
-    let loadedCustomer = readFromDataReader hasRowsFunc populateObjFunc
-        
-    loadedCustomer
-
-
+    executeReaderFunc query dataReaderCallback
+    
 //////////////////////////////////////////////////////////////////////////
 
-let private updateFailedRecord connectionString failureInfo = 
+let private updateFailedRecord failureInfo getSqlCmdFunc = 
     let query = "
 declare @importStatusId int = (select Id from ImportStatus where StatusName = @importStatusName)
 update CustomerCompany 
     set ImportStatusId = @importStatusId 
 where CustomerNumber = @customerNumber
 and CompanyCode = @companyCode"
-    use sqlConn = new SqlConnection(connectionString)
-    sqlConn.Open()
-    use sqlCmd = new SqlCommand(query, sqlConn) //todo: does F# have String.Empty?
-    sqlCmd.Parameters.Add(new SqlParameter("importStatusName", failureInfo.InputStatusUpdateInfo.NextImportStatus)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("customerNumber", failureInfo.InputStatusUpdateInfo.CustomerNumber)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("companyCode", failureInfo.InputStatusUpdateInfo.CompanyCode)) |> ignore
+    
+    let dbCallback (sqlCmd:SqlCommand) = 
+        sqlCmd.Parameters.Add(new SqlParameter("importStatusName", failureInfo.InputStatusUpdateInfo.NextImportStatus)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("customerNumber", failureInfo.InputStatusUpdateInfo.CustomerNumber)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("companyCode", failureInfo.InputStatusUpdateInfo.CompanyCode)) |> ignore
 
-    let rowsUpdated = sqlCmd.ExecuteNonQuery();
-    match rowsUpdated with 
-    |1 -> NewFailure failureInfo //pass the original failure back to logging service
-    |_ -> NewFailure ({failureInfo with
-                        Message = String.Format("Failed to update ImportStatus of input record.{0}{1}", Environment.NewLine, failureInfo.Message)
-                        }:FailureInfo)
+        let rowsUpdated = sqlCmd.ExecuteNonQuery();
+        match rowsUpdated with 
+        |1 -> NewFailure failureInfo //pass the original failure back to logging service
+        |_ -> NewFailure ({failureInfo with
+                            Message = String.Format("Failed to update ImportStatus of input record.{0}{1}", Environment.NewLine, failureInfo.Message)
+                            }:FailureInfo)
 
+    getSqlCmdFunc query dbCallback
 
-
-let updateInputStatus connectionString state = 
+let updateInputStatus state getSqlCmdFunc = 
     match state with 
     |Success(s) -> state
     |Failure s -> state
-    |NewFailure failureInfo -> updateFailedRecord connectionString failureInfo
+    |NewFailure failureInfo -> updateFailedRecord failureInfo getSqlCmdFunc 

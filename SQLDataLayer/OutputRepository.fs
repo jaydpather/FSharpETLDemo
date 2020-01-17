@@ -6,7 +6,7 @@ open GlobalTypes
 open System
 open Model
 
-let upsertCustomer connectionString (customer:WCCustomer) =
+let upsertCustomer (customer:WCCustomer) getSqlCmdFunc =
     let query = @"
 DECLARE @Actions TABLE(Action VARCHAR(20));  --not sure why we need 20 length, but that's what the MS examples have
 declare @customerId int = (SELECT ISNULL((MAX(Id) + 1),1000) FROM [Customers]) --Customers table does not have IDENTITY AUTO INCREMENT. If there's a primary key collision, we'll just retry this record
@@ -76,27 +76,26 @@ WHEN NOT MATCHED BY TARGET
 output $action into @Actions; --todo: do we also want to return row count?
 
 select Action from @Actions --impossible for this to return more than 1 row, since we selected from parameters"
-    use sqlConn = new SqlConnection(connectionString)
-    sqlConn.Open()
-    use sqlCmd = new SqlCommand(query, sqlConn)
 
-    sqlCmd.Parameters.Add(new SqlParameter("customerNumber", customer.CustomerNumber)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("city", customer.Address_City)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("countryCode", customer.Address_CountryCode)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("customerType", customer.Address_CustomerType)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("postalCode", customer.Address_PostalCode)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("region", customer.Address_Region)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("streetHouseNumber", customer.Address_StreetHouseNumber)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("companyCode", customer.CompanyCode)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("isActive", customer.IsActive)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("languageCode", customer.LanguageCode)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("name", customer.Name)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("phone", customer.Phone)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("timestamp", customer.Timestamp)) |> ignore
-    sqlCmd.Parameters.Add(new SqlParameter("vatCode", customer.VATCode)) |> ignore
+    let dbCallback (sqlCmd:SqlCommand) = 
+        sqlCmd.Parameters.Add(new SqlParameter("customerNumber", customer.CustomerNumber)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("city", customer.Address_City)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("countryCode", customer.Address_CountryCode)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("customerType", customer.Address_CustomerType)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("postalCode", customer.Address_PostalCode)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("region", customer.Address_Region)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("streetHouseNumber", customer.Address_StreetHouseNumber)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("companyCode", customer.CompanyCode)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("isActive", customer.IsActive)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("languageCode", customer.LanguageCode)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("name", customer.Name)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("phone", customer.Phone)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("timestamp", customer.Timestamp)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("vatCode", customer.VATCode)) |> ignore
 
-    let sqlAction = sqlCmd.ExecuteScalar() :?> string;
-    let result = String.Format("SUCCESS: {0} CustomerNumber:{1} CompanyCode:{2}", sqlAction, customer.CustomerNumber, customer.CompanyCode)
+        let sqlAction = sqlCmd.ExecuteScalar() :?> string;
+        let result = String.Format("SUCCESS: {0} CustomerNumber:{1} CompanyCode:{2}", sqlAction, customer.CustomerNumber, customer.CompanyCode)
     
-    result
+        result
     
+    getSqlCmdFunc query dbCallback
