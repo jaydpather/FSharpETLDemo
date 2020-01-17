@@ -17,12 +17,9 @@ let logRecord state =
         match msgOption with 
         | Some (s:string) -> Console.WriteLine s
         | None -> ignore() //this means there were no records to select
-    | NewSuccess (siOption) ->
-        match siOption with 
-        | Some (si:SuccessInfo) -> 
-            String.Format("SUCCESS: {0} {1} {2}", si.Action, si.CustomerNumber, si.CompanyCode) 
-            |> Console.WriteLine 
-        | None -> ignore() //this means there were no records to select
+    | NewSuccess (si) ->
+        String.Format("SUCCESS: {0} {1} {2}", si.Action, si.CustomerNumber, si.CompanyCode) 
+        |> Console.WriteLine 
     //| Success customerOption -> 
     //    match customerOption with 
     //        | Some (customer:WCCustomer) -> customer |> Console.WriteLine |> ignore 

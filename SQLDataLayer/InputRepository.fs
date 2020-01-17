@@ -118,9 +118,31 @@ and CompanyCode = @companyCode"
 
     getSqlCmdFunc query dbCallback
 
+//////////////////////////////////////////////////////////////////////////////
+let deleteSuccessfulRecord (successInfo:SuccessInfo) getSqlCmdFunc = 
+    let query = "delete from CustomerCompany where CustomerNumber = @CustomerNumber and CompanyCode = @CompanyCode"
+    //todo: also delete CustomerBasic, if no CustomerCompany records left AND it's not due to SAP sending only CustomerBasic
+    let dbCallback (sqlCmd:SqlCommand) =
+        sqlCmd.Parameters.Add(new SqlParameter("CustomerNumber", successInfo.CustomerNumber)) |> ignore
+        sqlCmd.Parameters.Add(new SqlParameter("CompanyCode", successInfo.CompanyCode)) |> ignore
+        let rowsAffected = sqlCmd.ExecuteNonQuery()
+
+        match rowsAffected with
+        |1 -> NewSuccess successInfo
+        |rowCount -> NewFailure { 
+                Message = String.Format("Customer saved in WC successfully, but failed to delete input record. Expected 1 row affected, but {0} rows were affected.", rowCount);
+                InputStatusUpdateInfo = {
+                    CustomerNumber = successInfo.CustomerNumber;
+                    CompanyCode = successInfo.CompanyCode;
+                    NextImportStatus = "Failed"; //todo: remove this dummy value
+                }
+            }
+
+    getSqlCmdFunc query dbCallback
+
 let updateInputStatus state getSqlCmdFunc = 
     match state with 
     |Success(s) -> state
-    |NewSuccess(s) -> state //s is now going to be a SuccessInfo option
+    |NewSuccess(successInfo) -> deleteSuccessfulRecord successInfo getSqlCmdFunc
     |Failure s -> state
     |NewFailure failureInfo -> updateFailedRecord failureInfo getSqlCmdFunc 

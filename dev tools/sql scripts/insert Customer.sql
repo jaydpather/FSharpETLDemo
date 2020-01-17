@@ -1,7 +1,8 @@
 use SAPImport_RD
 
 --select * from CustomerBasic
---select * from CustomerCompany where ImportStatusId = 3
+--select * from CustomerCompany 
+--select * from ImportStatus
 
 delete from CustomerCompany
 delete from CustomerBasic
