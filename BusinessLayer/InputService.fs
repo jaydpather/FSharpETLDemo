@@ -3,9 +3,10 @@
 open GlobalTypes
 open Model
 open System
+open InputRepository
 open InputRepositoryFactory
 
-let updateImportStatus inputRepoCtx state = 
+let updateImportStatus (inputRepoCtx:IInputRepositoryContext) state = 
     try
         inputRepoCtx.updateImportStatus state
     with

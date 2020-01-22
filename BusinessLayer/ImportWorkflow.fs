@@ -5,7 +5,8 @@ open InputServiceFactory //todo: InputServiceContext should be inside InputServi
 open OutputServiceFactory
 
 let importCustomers inputSvcCtx mappingFunc outputSvcCtx loggingFunc =
-    //todo: convert all Failures to NewFailures
+    //todo: convert all Failures to NewFailures (and all Successes to NewSuccesses)
+    //todo: create another workflow that will select and log the case of a missing CustomerCompany record
     inputSvcCtx.loadCustomer()
     |> checkState mappingFunc
     |> checkState outputSvcCtx.saveCustomer

@@ -6,7 +6,7 @@ open GlobalTypes
 let convertToIsActive isDeleted = //todo: implement method
     true
 
-let mapToWCCustomer timestampOfBatch (sapCustomer:SAPCustomer) =
+let mapToWCCustomer timestamp (sapCustomer:SAPCustomer) =
 //todo: try/with - return NewFailure if exception
     Success (Some {
             CustomerNumber = sapCustomer.CustomerNumber;
@@ -17,7 +17,7 @@ let mapToWCCustomer timestampOfBatch (sapCustomer:SAPCustomer) =
             Phone = sapCustomer.Phone;
             VATCode = sapCustomer.VATNumber;
             LanguageCode = sapCustomer.LanguageCode;
-            Timestamp = timestampOfBatch;
+            Timestamp = timestamp;
             IsActive = convertToIsActive sapCustomer.IsDeleted;
             Address_StreetHouseNumber = sapCustomer.StreetHouseNumber;
             Address_PostalCode = sapCustomer.PostalCode;

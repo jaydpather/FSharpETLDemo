@@ -10,7 +10,7 @@ type InputServiceContext = {
     updateInputStatus : Result<string option, SuccessInfo, string, FailureInfo> -> Result<string option, SuccessInfo, string, FailureInfo>
 }
 
-let getInputServiceContext (inputRepoCtx:InputRepositoryContext) = {
+let getInputServiceContext (inputRepoCtx:IInputRepositoryContext) = {
     loadCustomer = fun () -> InputService.loadCustomers inputRepoCtx.loadCustomer;
     updateInputStatus = fun state -> InputService.updateImportStatus inputRepoCtx state
 }

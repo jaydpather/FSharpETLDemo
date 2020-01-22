@@ -115,6 +115,7 @@ and CompanyCode = @companyCode"
         |_ -> NewFailure ({failureInfo with
                             Message = String.Format("Failed to update ImportStatus of input record.{0}{1}", Environment.NewLine, failureInfo.Message)
                             }:FailureInfo)
+        //note: patterns are tested in order, so we must check for 1 before _
 
     getSqlCmdFunc query dbCallback
 
@@ -141,8 +142,11 @@ let deleteSuccessfulRecord (successInfo:SuccessInfo) getSqlCmdFunc =
     getSqlCmdFunc query dbCallback
 
 let updateInputStatus state getSqlCmdFunc = 
+    //todo: this pattern match should be in the service, not repository. (then UT should check that the correct Repository method was called)
     match state with 
     |Success(s) -> state
     |NewSuccess(successInfo) -> deleteSuccessfulRecord successInfo getSqlCmdFunc
     |Failure s -> state
     |NewFailure failureInfo -> updateFailedRecord failureInfo getSqlCmdFunc 
+
+
