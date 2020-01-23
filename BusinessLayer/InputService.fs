@@ -20,6 +20,7 @@ let loadCustomers loadCustomersRepoFunc =
         match loadedCustomer with 
         | Some (customer:SAPCustomer) ->
             match customer.CompanyCode with 
+            //todo: null and "" cases are not possible to hit right now, because the select query has JOINs that prevent this from happening
             | null //never seen null, but maybe this will change with later versions of SqlDataReader
             | "" -> Failure (String.Format("CustomerNumber {0} has no CompanyCode. (missing CustomerCompany record)", customer.CustomerNumber))
             | _ -> Success (Some customer)

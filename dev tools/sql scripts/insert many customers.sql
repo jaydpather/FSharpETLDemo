@@ -6,6 +6,10 @@ delete from CustomerBasic
 --select * from CustomerBasic
 --select * from CustomerCompany where ImportStatusId = 3
 
+--select * from CustomerBasic cb
+--left join CustomerCompany cc on cc.CustomerNumber = cb.CustomerNumber
+--where cc.CompanyCode is null
+
 insert into CustomerBasic
 values ('CN12345678', 'DE', 'test import 2', 'Cologne', '9074AB', 'UH', 'DE', '111246', '145', '1487223314', getdate(), null, 'ABCD')	insert into CustomerCompany
 values('CN12345678', 'W031', getdate(), null, (select Id from ImportStatus where StatusName = 'New'))
