@@ -110,13 +110,8 @@ and CompanyCode = @companyCode"
         sqlCmd.Parameters.Add(new SqlParameter("companyCode", failureInfo.InputStatusUpdateInfo.CompanyCode)) |> ignore
 
         //todo: this method shoud return RowCount. Service should convert to Failure
-        let rowsUpdated = sqlCmd.ExecuteNonQuery();
-        match rowsUpdated with 
-        |1 -> NewFailure failureInfo //pass the original failure back to logging service
-        |_ -> NewFailure ({failureInfo with
-                            Message = String.Format("Failed to update ImportStatus of input record.{0}{1}", Environment.NewLine, failureInfo.Message)
-                            }:FailureInfo)
-        //note: patterns are tested in order, so we must check for 1 before _
+        let rowsAffected = sqlCmd.ExecuteNonQuery();
+        rowsAffected
 
     getSqlCmdFunc query dbCallback
 
@@ -127,19 +122,9 @@ let deleteSuccessfulRecord (successInfo:SuccessInfo) getSqlCmdFunc =
     let dbCallback (sqlCmd:SqlCommand) =
         sqlCmd.Parameters.Add(new SqlParameter("CustomerNumber", successInfo.CustomerNumber)) |> ignore
         sqlCmd.Parameters.Add(new SqlParameter("CompanyCode", successInfo.CompanyCode)) |> ignore
+        
         let rowsAffected = sqlCmd.ExecuteNonQuery()
-
-        //todo: this method should return row count. Service should convert to Failure
-        match rowsAffected with
-        |1 -> NewSuccess successInfo
-        |rowCount -> NewFailure { 
-                Message = String.Format("Customer saved in WC successfully, but failed to delete input record. Expected 1 row affected, but {0} rows were affected.", rowCount);
-                InputStatusUpdateInfo = {
-                    CustomerNumber = successInfo.CustomerNumber;
-                    CompanyCode = successInfo.CompanyCode;
-                    NextImportStatus = "Failed"; //todo: remove this dummy value
-                }
-            }
+        rowsAffected
 
     getSqlCmdFunc query dbCallback
 

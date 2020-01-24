@@ -79,7 +79,7 @@ type InputServiceTest_LoadCustomers() =
 [<TestClass>]
 type InputServiceTest_UpdateImportStatus() = 
     [<TestMethod>]
-    member this.UpdateSuccessfulRecord() =
+    member this.UpdateSuccessfulRecord_SuccessCase() =
         let repoParam = {
                 Action = "xyz"; 
                 CustomerNumber = "waz"; 
@@ -88,11 +88,7 @@ type InputServiceTest_UpdateImportStatus() =
         let serviceParam = NewSuccess repoParam       
         
         let repoCtx = Mock<IInputRepositoryContext>()
-                        .Setup(fun x -> <@ x.deleteSuccessfulRecord repoParam @>).Returns(NewSuccess({
-                            Action = "abc"; 
-                            CustomerNumber = "def"; 
-                            CompanyCode = "CC";
-                        }))
+                        .Setup(fun x -> <@ x.deleteSuccessfulRecord repoParam @>).Returns(1)
                         .Create()
         let svcCtx = InputServiceFactory.getInputServiceContext repoCtx
         
@@ -100,9 +96,58 @@ type InputServiceTest_UpdateImportStatus() =
         Mock.Verify(<@ repoCtx.deleteSuccessfulRecord repoParam @>, Times.Once)
         Mock.Verify(<@ repoCtx.updateFailedRecordStatus (any()) @>, Times.Never)
 
+        match result with
+        |NewSuccess _ -> 
+            let equal = serviceParam = result
+            Assert.IsTrue(equal) //should pass param back in success case. todo: why can't I use Assert.AreEqual here? I am returning the same object, so reference equality should work
+        |_ -> Assert.Fail("expected original state back");
+
     [<TestMethod>]
-    member this.UpdateFailedRecord() =
+    member this.UpdateSuccessfulRecord_ZeroRowsAffected() =
+        let repoParam = {
+                Action = "xyz"; 
+                CustomerNumber = "waz"; 
+                CompanyCode = "pbc";
+            }
+        let serviceParam = NewSuccess repoParam       
         
+        let repoCtx = Mock<IInputRepositoryContext>()
+                        .Setup(fun x -> <@ x.deleteSuccessfulRecord repoParam @>).Returns(0)
+                        .Create()
+        let svcCtx = InputServiceFactory.getInputServiceContext repoCtx
+        
+        let result = svcCtx.updateInputStatus serviceParam
+        Mock.Verify(<@ repoCtx.deleteSuccessfulRecord repoParam @>, Times.Once)
+        Mock.Verify(<@ repoCtx.updateFailedRecordStatus (any()) @>, Times.Never)
+
+        match result with
+        |NewFailure _ -> Assert.IsTrue(true) //expected result
+        |_ -> Assert.Fail("expected NewFailure")
+
+    [<TestMethod>]
+    member this.UpdateSuccessfulRecord_DbException() =
+        let repoParam = {
+                Action = "xyz"; 
+                CustomerNumber = "waz"; 
+                CompanyCode = "pbc";
+            }
+        let serviceParam = NewSuccess repoParam       
+        
+        let repoCtx = Mock<IInputRepositoryContext>()
+                        .Setup(fun x -> <@ x.deleteSuccessfulRecord repoParam @>).Raises<Exception>()
+                        .Create()
+        let svcCtx = InputServiceFactory.getInputServiceContext repoCtx
+        
+        let result = svcCtx.updateInputStatus serviceParam
+        Mock.Verify(<@ repoCtx.deleteSuccessfulRecord repoParam @>, Times.Once)
+        Mock.Verify(<@ repoCtx.updateFailedRecordStatus (any()) @>, Times.Never)
+
+        match result with
+        |Failure _ -> Assert.IsTrue(true) //expected result
+        |_ -> Assert.Fail("expected Failure")
+
+    [<TestMethod>]
+    member this.UpdateFailedRecord_SuccessCase() =
         let repoParam = {
                 Message = "failed";
                 InputStatusUpdateInfo = {
@@ -114,7 +159,7 @@ type InputServiceTest_UpdateImportStatus() =
         let serviceParam = NewFailure repoParam       
         
         let repoCtx = Mock<IInputRepositoryContext>()
-                        .Setup(fun x -> <@ x.updateFailedRecordStatus repoParam @>).Returns(NewFailure repoParam) //repo returns the original failure back in the success case
+                        .Setup(fun x -> <@ x.updateFailedRecordStatus repoParam @>).Returns(1)
                         .Create()
         let svcCtx = InputServiceFactory.getInputServiceContext repoCtx
         
@@ -122,3 +167,59 @@ type InputServiceTest_UpdateImportStatus() =
         Mock.Verify(<@ repoCtx.deleteSuccessfulRecord (any()) @>, Times.Never)
         Mock.Verify(<@ repoCtx.updateFailedRecordStatus repoParam @>, Times.Once)
 
+        match result with
+        |NewFailure _ -> 
+            let equal = serviceParam = result
+            Assert.IsTrue(equal) //should pass param back in success case. todo: why can't I use Assert.AreEqual here? I am returning the same object, so reference equality should work
+        |_ -> Assert.Fail("expected original state back");
+
+
+    [<TestMethod>]
+    member this.UpdateFailedRecord_ZeroRowsAffected() =
+        let repoParam = {
+                Message = "failed";
+                InputStatusUpdateInfo = {
+                    CustomerNumber = "abc";
+                    CompanyCode = "1223";
+                    NextImportStatus = "New";
+                }
+            }
+        let serviceParam = NewFailure repoParam       
+        
+        let repoCtx = Mock<IInputRepositoryContext>()
+                        .Setup(fun x -> <@ x.updateFailedRecordStatus repoParam @>).Returns(0) 
+                        .Create()
+        let svcCtx = InputServiceFactory.getInputServiceContext repoCtx
+        
+        let result = svcCtx.updateInputStatus serviceParam
+        Mock.Verify(<@ repoCtx.deleteSuccessfulRecord (any()) @>, Times.Never)
+        Mock.Verify(<@ repoCtx.updateFailedRecordStatus repoParam @>, Times.Once)
+
+        match result with
+        |NewFailure _ -> Assert.IsTrue(true) //expected result
+        |_ -> Assert.Fail("expected NewFailure")
+
+    [<TestMethod>]
+    member this.UpdateFailedRecord_DbException() =
+        let repoParam = {
+                Message = "failed";
+                InputStatusUpdateInfo = {
+                    CustomerNumber = "abc";
+                    CompanyCode = "1223";
+                    NextImportStatus = "New";
+                }
+            }
+        let serviceParam = NewFailure repoParam       
+        
+        let repoCtx = Mock<IInputRepositoryContext>()
+                        .Setup(fun x -> <@ x.updateFailedRecordStatus repoParam @>).Raises<Exception>()
+                        .Create()
+        let svcCtx = InputServiceFactory.getInputServiceContext repoCtx
+        
+        let result = svcCtx.updateInputStatus serviceParam
+        Mock.Verify(<@ repoCtx.deleteSuccessfulRecord (any()) @>, Times.Never)
+        Mock.Verify(<@ repoCtx.updateFailedRecordStatus repoParam @>, Times.Once)
+
+        match result with
+        |Failure _ -> Assert.IsTrue(true) //expected result
+        |_ -> Assert.Fail("expected Failure")

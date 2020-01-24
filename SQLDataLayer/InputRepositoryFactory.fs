@@ -6,15 +6,15 @@ open InputRepository
 
 type IInputRepositoryContext = 
     abstract member loadCustomer : unit -> SAPCustomer option;
-    abstract member updateFailedRecordStatus : FailureInfo -> Result<string option, SuccessInfo, string, FailureInfo>
-    abstract member deleteSuccessfulRecord : SuccessInfo -> Result<string option, SuccessInfo, string, FailureInfo>
+    abstract member updateFailedRecordStatus : FailureInfo -> int
+    abstract member deleteSuccessfulRecord : SuccessInfo -> int
 
 //todo: why do i get a compile error when i move InputRepositoryContext into InputRepository.fs?  
 type InputRepositoryContext = 
     { 
         loadCustomer : unit -> SAPCustomer option;
-        updateFailedRecordStatus : FailureInfo -> Result<string option, SuccessInfo, string, FailureInfo>;
-        deleteSuccessfulRecord : SuccessInfo -> Result<string option, SuccessInfo, string, FailureInfo>;
+        updateFailedRecordStatus : FailureInfo -> int
+        deleteSuccessfulRecord : SuccessInfo -> int
     } 
     interface IInputRepositoryContext with
         member this.loadCustomer() = 
