@@ -1,0 +1,9 @@
+NEED to research how to build to executable with dotnet build.
+Normal way of running .Net Core apps is to run command line "dotnet [file.dll]" 
+  * make this into a batch file, I guess
+
+
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsc"
+
+
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsc" Program.fs --target:exe -o FSharpETLDemo.exe -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\Model.dll -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\FSharpETLDemo.dll -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\BusinessLayer.dll -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\SqlDataLayer.dll
