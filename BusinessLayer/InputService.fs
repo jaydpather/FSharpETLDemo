@@ -8,7 +8,11 @@ open InputRepositoryFactory
 
 let updateImportStatus (inputRepoCtx:IInputRepositoryContext) state = 
     try
-        inputRepoCtx.updateImportStatus state
+        match state with 
+        |Success(s) -> state
+        |NewSuccess(successInfo) -> inputRepoCtx.deleteSuccessfulRecord successInfo
+        |Failure s -> state
+        |NewFailure failureInfo -> inputRepoCtx.updateFailedRecordStatus failureInfo
     with
     | :? Exception as ex -> (String.Format("failed to update import status{0}Message:{1}{0}Stack Trace:{2}", Environment.NewLine, ex.Message, ex.StackTrace)) |> Failure //todo: NewFailure
 

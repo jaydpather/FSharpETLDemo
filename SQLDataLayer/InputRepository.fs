@@ -96,7 +96,7 @@ SELECT top(1)
     
 //////////////////////////////////////////////////////////////////////////
 
-let private updateFailedRecord failureInfo getSqlCmdFunc = 
+let updateFailedRecord failureInfo getSqlCmdFunc = 
     let query = "
 declare @importStatusId int = (select Id from ImportStatus where StatusName = @importStatusName)
 update CustomerCompany 
@@ -109,6 +109,7 @@ and CompanyCode = @companyCode"
         sqlCmd.Parameters.Add(new SqlParameter("customerNumber", failureInfo.InputStatusUpdateInfo.CustomerNumber)) |> ignore
         sqlCmd.Parameters.Add(new SqlParameter("companyCode", failureInfo.InputStatusUpdateInfo.CompanyCode)) |> ignore
 
+        //todo: this method shoud return RowCount. Service should convert to Failure
         let rowsUpdated = sqlCmd.ExecuteNonQuery();
         match rowsUpdated with 
         |1 -> NewFailure failureInfo //pass the original failure back to logging service
@@ -128,6 +129,7 @@ let deleteSuccessfulRecord (successInfo:SuccessInfo) getSqlCmdFunc =
         sqlCmd.Parameters.Add(new SqlParameter("CompanyCode", successInfo.CompanyCode)) |> ignore
         let rowsAffected = sqlCmd.ExecuteNonQuery()
 
+        //todo: this method should return row count. Service should convert to Failure
         match rowsAffected with
         |1 -> NewSuccess successInfo
         |rowCount -> NewFailure { 
@@ -140,13 +142,5 @@ let deleteSuccessfulRecord (successInfo:SuccessInfo) getSqlCmdFunc =
             }
 
     getSqlCmdFunc query dbCallback
-
-let updateInputStatus state getSqlCmdFunc = 
-    //todo: this pattern match should be in the service, not repository. (then UT should check that the correct Repository method was called)
-    match state with 
-    |Success(s) -> state
-    |NewSuccess(successInfo) -> deleteSuccessfulRecord successInfo getSqlCmdFunc
-    |Failure s -> state
-    |NewFailure failureInfo -> updateFailedRecord failureInfo getSqlCmdFunc 
 
 
