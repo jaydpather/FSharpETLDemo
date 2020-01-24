@@ -6,7 +6,7 @@ open System.Data.SqlClient
 open GlobalTypes
 open Model
 
-//todo: private methods in all modules
+//todo*: private methods in all modules
 
 let populateSAPCustomer (dataReader:SqlDataReader) =
     dataReader.Read() |> ignore 
@@ -90,7 +90,7 @@ SELECT top(1)
         let hasRowsFunc = fun () -> dataReader.HasRows //using a delegate so it's injectable
         let populateObjFunc = fun () -> populateSAPCustomer dataReader //using a delegate so it's injectable
         readFromDataReader hasRowsFunc populateObjFunc
-    //WHERE CC.CompanyCode IN ('W031','TH31','INLC','TH90','TH47','CK07','CK47','PB31','3906','PVHE')
+    //WHERE CC.CompanyCode IN ('W031','TH31','INLC','TH90','TH47','CK07','CK47','PB31','3906','PVHE') //todo*: put company code filtering back in (log msgs for invalid CompanyCodes later)
     
     executeReaderFunc query dataReaderCallback
     
@@ -109,7 +109,6 @@ and CompanyCode = @companyCode"
         sqlCmd.Parameters.Add(new SqlParameter("customerNumber", failureInfo.InputStatusUpdateInfo.CustomerNumber)) |> ignore
         sqlCmd.Parameters.Add(new SqlParameter("companyCode", failureInfo.InputStatusUpdateInfo.CompanyCode)) |> ignore
 
-        //todo: this method shoud return RowCount. Service should convert to Failure
         let rowsAffected = sqlCmd.ExecuteNonQuery();
         rowsAffected
 

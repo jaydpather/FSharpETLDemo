@@ -9,7 +9,7 @@ type IInputRepositoryContext =
     abstract member updateFailedRecordStatus : FailureInfo -> int
     abstract member deleteSuccessfulRecord : SuccessInfo -> int
 
-//todo: why do i get a compile error when i move InputRepositoryContext into InputRepository.fs?  
+//todo*: why do i get a compile error when i move InputRepositoryContext into InputRepository.fs?  
 type InputRepositoryContext = 
     { 
         loadCustomer : unit -> SAPCustomer option;

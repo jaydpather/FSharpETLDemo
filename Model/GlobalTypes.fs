@@ -1,6 +1,6 @@
 ﻿module GlobalTypes
 
-type Result<'TSuccess1, 'TSuccess2, 'TFailure1, 'TFailure2> = //todo: rename Result to State
+type Result<'TSuccess1, 'TSuccess2, 'TFailure1, 'TFailure2> = //todo*: rename Result to State
     | Success of 'TSuccess1
     | NewSuccess of 'TSuccess2
     | Failure of 'TFailure1
@@ -10,7 +10,7 @@ type Result<'TSuccess1, 'TSuccess2, 'TFailure1, 'TFailure2> = //todo: rename Res
 type InputStatusUpdateInfo = {
     CustomerNumber:string;
     CompanyCode:string;
-    NextImportStatus:string; //todo: enum for ImportStatus
+    NextImportStatus:string; //todo*: enum for ImportStatus
 }
 
 type FailureInfo = {
