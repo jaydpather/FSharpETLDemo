@@ -10,6 +10,6 @@ let importCustomers inputSvcCtx mappingFunc outputSvcCtx loggingFunc =
     inputSvcCtx.loadCustomer()
     |> checkState mappingFunc
     |> checkState outputSvcCtx.saveCustomer
-    |> inputSvcCtx.updateInputStatus //the last 2 steps handle both success and failure, so we don't call checkState on them
+    |> checkEmptyState inputSvcCtx.updateInputStatus //the last 2 steps handle both success and failure, so we don't call checkState on them
     |> loggingFunc
     
