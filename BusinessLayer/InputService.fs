@@ -31,7 +31,7 @@ let updateImportStatus (inputRepoCtx:IInputRepositoryContext) state =
         let (rowCount, createFailureFunc) =  
             match state with 
             |NewSuccess(successInfo) -> 
-                ( //todo: why didn't this compile as an anonymous Record? (currently returning Tuple)
+                ( //todo: updgrade to VS2019 so you can use anonymous records. (this is a bug that MS won't fix for VS2017)
                     inputRepoCtx.deleteSuccessfulRecord successInfo,
                     fun rowCount -> 
                         appendRowCountMsg "Customer saved in WC successfully, but failed to delete input record." rowCount

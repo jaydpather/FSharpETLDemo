@@ -7,7 +7,6 @@
 //    Failed:string;
 //}
 
-//todo: how to make these compile-time constants?
     module ImportStatusNames =
         [<Literal>]
         let New = "New";

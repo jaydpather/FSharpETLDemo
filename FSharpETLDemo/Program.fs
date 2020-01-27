@@ -9,11 +9,6 @@ let main argv =
     //todo: make a stored view that joins CustomerBasic, CustomerCompany, and CustomerCompanyImportStatus
     //todo: use IDENTITY INSERT in your SQL deployment scripts, so you can just pass StatusIds to queries. (StatusIds stored in an enum)
 
-    //todo*: learn how to compile to exe with dotnet publish -c release -r win-x64
-    //  * so far this command freezes
-
-    //todo: remove as much logic as possible from Program.cs
-
     let inputServiceCtx = 
         Configuration.ConfigurationManager.ConnectionStrings.["SAPImport"].ConnectionString 
         |> InputRepositoryFactory.getInputRepositoryContext 

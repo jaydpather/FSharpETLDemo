@@ -5,7 +5,7 @@ open System.Data.SqlClient
 let private executeReader connectionString query dataReaderCallback = 
     use sqlConn = new SqlConnection(connectionString)
     sqlConn.Open()
-    use sqlCmd = new SqlCommand(query, sqlConn) //todo*: does F# have String.Empty?
+    use sqlCmd = new SqlCommand(query, sqlConn)
     use dataReader = sqlCmd.ExecuteReader();
     dataReaderCallback dataReader
 

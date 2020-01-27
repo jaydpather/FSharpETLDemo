@@ -1,7 +1,7 @@
 ﻿module ImportWorkflow
 
 open StateChecker
-open InputServiceFactory //todo: InputServiceContext should be inside InputService, not InputServiceFactory. (same for all ServiceContexts and RepoContexts)
+open InputServiceFactory
 open OutputServiceFactory
 
 let importCustomers inputSvcCtx mappingFunc outputSvcCtx loggingFunc =

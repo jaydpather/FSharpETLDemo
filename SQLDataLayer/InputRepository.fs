@@ -126,5 +126,3 @@ let deleteSuccessfulRecord (successInfo:SuccessInfo) getSqlCmdFunc =
         rowsAffected
 
     getSqlCmdFunc query dbCallback
-
-
