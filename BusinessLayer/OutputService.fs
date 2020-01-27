@@ -14,7 +14,7 @@ let generateFailureInfo (ex:Exception) customer =
         InputStatusUpdateInfo = {
             CustomerNumber = customer.CustomerNumber;
             CompanyCode = customer.CompanyCode;
-            NextImportStatus = "New"; //todo: reference constant
+            NextImportStatus = Constants.ImportStatusNames.New;
         }
     })
     | false -> ({
@@ -22,7 +22,7 @@ let generateFailureInfo (ex:Exception) customer =
         InputStatusUpdateInfo = {
             CustomerNumber = customer.CustomerNumber;
             CompanyCode = customer.CompanyCode;
-            NextImportStatus = "Failed"; //todo: reference constant
+            NextImportStatus = Constants.ImportStatusNames.Failed;
         }
     })
 

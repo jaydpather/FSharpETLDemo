@@ -1,9 +1,25 @@
-NEED to research how to build to executable with dotnet build.
-Normal way of running .Net Core apps is to run command line "dotnet [file.dll]" 
-  * make this into a batch file, I guess
+3 ways of running app:
+  * use "dotnet" executable
+    * command line: dotnet FSharpETLDemo.dll
+    * disadvantage: all apps run this way appear as ".Net console host" in Task manager (can't tell which is which)
+
+  * build framework-dependent executable
+    * command line: dotnet publish FSharpETLDemo.fsproj -c Release -r win10-x64
+    * advantage: can see executable name in Task Manager. (instead of ".Net console host")
+    * disadvantage: requires .NET to be installed on target machine
+
+  * build self-contained executable
+    * command line: dotnet publish FSharpETLDemo.fsproj -c Release -r win10-x64 --self-contained
+    * advantage: * does not require .Net to be installed on target machine
+      * target machine still requires "native depdencies for .net core": https://github.com/dotnet/core/blob/master/Documentation/prereqs.md
+    * disadvantages:
+      * longer deployment time (more files to copy)
+      * uses more disk space
 
 
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsc"
+NOTE: 
+  * default output directory is in your project's bin/Debug or bin/Release folder. (depending on your -c option)
+  * whether or not you include --self-contained in your command line, you still get a folder called "publish" which contains all the .net DLL's
 
 
-"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsc" Program.fs --target:exe -o FSharpETLDemo.exe -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\Model.dll -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\FSharpETLDemo.dll -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\BusinessLayer.dll -r C:\Github\FSharpETLDemo\FSharpETLDemo\bin\Release\netcoreapp2.1\SqlDataLayer.dll
+   
